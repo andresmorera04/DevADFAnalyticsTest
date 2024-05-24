@@ -16,14 +16,38 @@
 				"fileName": "Asistencia.csv",
 				"folderPath": "/uploads"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "\t",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
 		"schema": [
 			{
-				"name": "Nombre\tPrimera entrada\tÚltima salida\tDuración de la reunión\tCorreo electrónico\tId. de participante (UPN)\tRol",
+				"name": "Nombre",
+				"type": "String"
+			},
+			{
+				"name": "Primera entrada",
+				"type": "String"
+			},
+			{
+				"name": "Última salida",
+				"type": "String"
+			},
+			{
+				"name": "Duración de la reunión",
+				"type": "String"
+			},
+			{
+				"name": "Correo electrónico",
+				"type": "String"
+			},
+			{
+				"name": "Id. de participante (UPN)",
+				"type": "String"
+			},
+			{
+				"name": "Rol",
 				"type": "String"
 			}
 		]
