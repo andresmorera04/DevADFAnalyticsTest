@@ -1,0 +1,165 @@
+{
+	"name": "pl_ingesta_asistencia_fundatec_csv",
+	"properties": {
+		"description": "Proceso de Ingesta que lee del SFTP un archivo CSV con datos de asistencia y lo guarda en la capa de bronce del Datalake",
+		"activities": [
+			{
+				"name": "Ingesta de Datos",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": false,
+							"modifiedDatetimeStart": {
+								"value": "@adddays(utcnow(), -4)",
+								"type": "Expression"
+							},
+							"modifiedDatetimeEnd": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							},
+							"enablePartitionDiscovery": false,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"parallelCopies": 1,
+					"dataIntegrationUnits": 2,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Nombre",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Nombre",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Primera entrada",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Primera entrada",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Última salida",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Última salida",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Duración de la reunión",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Duración de la reunión",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Correo electrónico",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Correo electrónico",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Id. de participante (UPN)",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Id. de participante (UPN)",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Rol",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Rol",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_asistencia_fundatec_csv",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_asistencia_fundatec_bronce_parquet",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Datalake/Bronce"
+		},
+		"annotations": []
+	}
+}
