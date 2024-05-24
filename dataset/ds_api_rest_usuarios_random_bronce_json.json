@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "usuarios_random",
+				"fileName": "usuarios_random.json",
 				"folderPath": "Bronce/Publico/APIs",
 				"fileSystem": "datalake"
 			}
