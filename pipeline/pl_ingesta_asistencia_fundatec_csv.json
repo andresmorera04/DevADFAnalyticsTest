@@ -70,8 +70,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Primera entrada",
-									"type": "String",
+									"name": "PrimeraEntrada",
 									"physicalType": "UTF8"
 								}
 							},
@@ -82,8 +81,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Última salida",
-									"type": "String",
+									"name": "UltimaSalida",
 									"physicalType": "UTF8"
 								}
 							},
@@ -94,8 +92,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Duración de la reunión",
-									"type": "String",
+									"name": "DuracionDeLaReunion",
 									"physicalType": "UTF8"
 								}
 							},
@@ -106,8 +103,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Correo electrónico",
-									"type": "String",
+									"name": "CorreoElectronico",
 									"physicalType": "UTF8"
 								}
 							},
@@ -118,8 +114,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Id. de participante (UPN)",
-									"type": "String",
+									"name": "IdParticipante",
 									"physicalType": "UTF8"
 								}
 							},
