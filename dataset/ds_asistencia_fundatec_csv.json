@@ -1,0 +1,31 @@
+{
+	"name": "ds_asistencia_fundatec_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sftp_asistencia_sql2_2024_fundatec",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "fundatec"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"fileName": "Asistencia.csv",
+				"folderPath": "/uploads"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Nombre\tPrimera entrada\tÚltima salida\tDuración de la reunión\tCorreo electrónico\tId. de participante (UPN)\tRol",
+				"type": "String"
+			}
+		]
+	}
+}
