@@ -1,0 +1,13 @@
+{
+	"name": "ls_api_rest_prueba_usuarios_random",
+	"properties": {
+		"description": "API Rest con datos aleatorios de usuarios",
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://randomuser.me/api/?results=2000",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
