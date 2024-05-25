@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adftesting444"
+		},
+		"ls_datalake_test_accountKey": {
+			"value": ""
+		},
+		"ls_sftp_asistencia_sql2_2024_fundatec_password": {
+			"value": ""
+		},
+		"ls_sql_server_configuracion_devvertix_connectionString": {
+			"value": ""
+		},
+		"ls_sql_server_stage_devvertix_connectionString": {
+			"value": ""
+		},
+		"ls_api_rest_prueba_usuarios_random_properties_typeProperties_url": {
+			"value": "https://randomuser.me/api/?results=2000"
+		},
+		"ls_datalake_test_properties_typeProperties_url": {
+			"value": "https://datalakestorageacc444.dfs.core.windows.net/"
+		},
+		"ls_sftp_asistencia_sql2_2024_fundatec_properties_typeProperties_host": {
+			"value": "dev-mssql2019.ddns.net"
+		},
+		"ls_sftp_asistencia_sql2_2024_fundatec_properties_typeProperties_userName": {
+			"value": "usrsftp"
+		}
+	}
+}

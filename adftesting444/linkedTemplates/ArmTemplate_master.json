@@ -1,0 +1,98 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Nombre de instancia de Data Factory",
+			"defaultValue": "adftesting444"
+		},
+		"ls_datalake_test_accountKey": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"accountKey\"de \"ls_datalake_test\""
+		},
+		"ls_sftp_asistencia_sql2_2024_fundatec_password": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"password\"de \"ls_sftp_asistencia_sql2_2024_fundatec\""
+		},
+		"ls_sql_server_configuracion_devvertix_connectionString": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"connectionString\"de \"ls_sql_server_configuracion_devvertix\""
+		},
+		"ls_sql_server_stage_devvertix_connectionString": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"connectionString\"de \"ls_sql_server_stage_devvertix\""
+		},
+		"ls_api_rest_prueba_usuarios_random_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://randomuser.me/api/?results=2000"
+		},
+		"ls_datalake_test_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://datalakestorageacc444.dfs.core.windows.net/"
+		},
+		"ls_sftp_asistencia_sql2_2024_fundatec_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "dev-mssql2019.ddns.net"
+		},
+		"ls_sftp_asistencia_sql2_2024_fundatec_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "usrsftp"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI de la cuenta de almacenamiento que contiene las plantillas de ARM vinculadas."
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Token de SAS para la cuenta de almacenamiento que contiene las plantillas de ARM vinculadas"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "adftesting444_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ls_datalake_test_accountKey": {
+						"value": "[parameters('ls_datalake_test_accountKey')]"
+					},
+					"ls_sftp_asistencia_sql2_2024_fundatec_password": {
+						"value": "[parameters('ls_sftp_asistencia_sql2_2024_fundatec_password')]"
+					},
+					"ls_sql_server_configuracion_devvertix_connectionString": {
+						"value": "[parameters('ls_sql_server_configuracion_devvertix_connectionString')]"
+					},
+					"ls_sql_server_stage_devvertix_connectionString": {
+						"value": "[parameters('ls_sql_server_stage_devvertix_connectionString')]"
+					},
+					"ls_api_rest_prueba_usuarios_random_properties_typeProperties_url": {
+						"value": "[parameters('ls_api_rest_prueba_usuarios_random_properties_typeProperties_url')]"
+					},
+					"ls_datalake_test_properties_typeProperties_url": {
+						"value": "[parameters('ls_datalake_test_properties_typeProperties_url')]"
+					},
+					"ls_sftp_asistencia_sql2_2024_fundatec_properties_typeProperties_host": {
+						"value": "[parameters('ls_sftp_asistencia_sql2_2024_fundatec_properties_typeProperties_host')]"
+					},
+					"ls_sftp_asistencia_sql2_2024_fundatec_properties_typeProperties_userName": {
+						"value": "[parameters('ls_sftp_asistencia_sql2_2024_fundatec_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
