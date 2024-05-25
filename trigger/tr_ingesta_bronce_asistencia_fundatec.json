@@ -4,7 +4,14 @@
 		"description": "Proceso automático de ejecución para ingestar los datos de la asistencia del CSV a la capa bronce del datalake",
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [],
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_orquestador_pipelines_bronce_sftp",
+					"type": "PipelineReference"
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
