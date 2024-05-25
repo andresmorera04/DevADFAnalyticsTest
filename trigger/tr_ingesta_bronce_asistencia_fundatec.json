@@ -4,14 +4,7 @@
 		"description": "Proceso automático de ejecución para ingestar los datos de la asistencia del CSV a la capa bronce del datalake",
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "pl_ingesta_asistencia_fundatec_csv",
-					"type": "PipelineReference"
-				}
-			}
-		],
+		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
