@@ -1,0 +1,51 @@
+{
+	"name": "pl_orquestador_pipelines_bronce_sftp",
+	"properties": {
+		"description": "Pipeline Orquestador de Bronce y de Sftp",
+		"activities": [
+			{
+				"name": "pl_ingesta_asistencia_fundatec_csv",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_ingesta_asistencia_fundatec_csv",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pl_ingesta_asistencia_fundatec_sftp_parquet",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pl_ingesta_asistencia_fundatec_csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_ingesta_asistencia_fundatec_sftp_parquet",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Datalake/Bronce"
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,39 @@
+{
+	"name": "ds_devvertix_configuracion_parametros_tb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_server_configuracion_devvertix",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL Server devvertix"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Codigo",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Valor",
+				"type": "varchar"
+			},
+			{
+				"name": "Descripcion",
+				"type": "varchar"
+			},
+			{
+				"name": "FechaRegistro",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Parametros"
+		}
+	}
+}

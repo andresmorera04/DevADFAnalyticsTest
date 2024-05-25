@@ -1,0 +1,37 @@
+{
+	"name": "tr_ingesta_bronce_asistencia_fundatec",
+	"properties": {
+		"description": "Proceso automático de ejecución para ingestar los datos de la asistencia del CSV a la capa bronce del datalake",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_orquestador_pipelines_bronce_sftp",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2024-05-25T00:05:00",
+				"endTime": "2024-06-14T01:00:00",
+				"timeZone": "Central America Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						12
+					],
+					"weekDays": [
+						"Saturday"
+					]
+				}
+			}
+		}
+	}
+}

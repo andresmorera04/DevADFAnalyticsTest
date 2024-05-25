@@ -1,0 +1,165 @@
+{
+	"name": "pl_ingesta_usuarios_random_api",
+	"properties": {
+		"description": "Ingesta de datos de un ",
+		"activities": [
+			{
+				"name": "Obtener Datos de API",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "GET",
+							"requestTimeout": ""
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings",
+							"filePattern": "arrayOfObjects"
+						}
+					},
+					"enableStaging": false,
+					"parallelCopies": 1,
+					"dataIntegrationUnits": 2,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['gender']"
+								},
+								"sink": {
+									"path": "gender"
+								}
+							},
+							{
+								"source": {
+									"path": "['name']"
+								},
+								"sink": {
+									"path": "name"
+								}
+							},
+							{
+								"source": {
+									"path": "['location']"
+								},
+								"sink": {
+									"path": "location"
+								}
+							},
+							{
+								"source": {
+									"path": "['email']"
+								},
+								"sink": {
+									"path": "email"
+								}
+							},
+							{
+								"source": {
+									"path": "['login']"
+								},
+								"sink": {
+									"path": "login"
+								}
+							},
+							{
+								"source": {
+									"path": "['dob']"
+								},
+								"sink": {
+									"path": "dob"
+								}
+							},
+							{
+								"source": {
+									"path": "['registered']"
+								},
+								"sink": {
+									"path": "registered"
+								}
+							},
+							{
+								"source": {
+									"path": "['phone']"
+								},
+								"sink": {
+									"path": "phone"
+								}
+							},
+							{
+								"source": {
+									"path": "['cell']"
+								},
+								"sink": {
+									"path": "cell"
+								}
+							},
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"path": "id"
+								}
+							},
+							{
+								"source": {
+									"path": "['picture']"
+								},
+								"sink": {
+									"path": "picture"
+								}
+							},
+							{
+								"source": {
+									"path": "['nat']"
+								},
+								"sink": {
+									"path": "nat"
+								}
+							}
+						],
+						"collectionReference": "$['results']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_api_rest_usuarios_random_json",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_api_rest_usuarios_random_bronce_json",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Datalake/Bronce"
+		},
+		"annotations": []
+	}
+}

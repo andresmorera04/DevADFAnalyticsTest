@@ -1,0 +1,53 @@
+{
+	"name": "ds_devvertix_stage_asistenciacsv_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_server_stage_devvertix",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL Server devvertix"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Secuencia",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Correo",
+				"type": "varchar"
+			},
+			{
+				"name": "NombreEstudiante",
+				"type": "varchar"
+			},
+			{
+				"name": "FechaPrimeraEntrada",
+				"type": "varchar"
+			},
+			{
+				"name": "FechaUltimaSalida",
+				"type": "varchar"
+			},
+			{
+				"name": "DuracionEnLaLeccion",
+				"type": "varchar"
+			},
+			{
+				"name": "IdParticipante",
+				"type": "varchar"
+			},
+			{
+				"name": "Rol",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "AsistenciaCsv"
+		}
+	}
+}
