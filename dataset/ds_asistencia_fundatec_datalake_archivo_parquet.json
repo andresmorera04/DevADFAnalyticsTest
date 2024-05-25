@@ -1,0 +1,53 @@
+{
+	"name": "ds_asistencia_fundatec_datalake_archivo_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_datalake_test",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "fundatec"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Asistencia.parquet",
+				"folderPath": "Bronce/Publico/Fundatec",
+				"fileSystem": "datalake"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "Nombre",
+				"type": "UTF8"
+			},
+			{
+				"name": "PrimeraEntrada",
+				"type": "UTF8"
+			},
+			{
+				"name": "UltimaSalida",
+				"type": "UTF8"
+			},
+			{
+				"name": "DuracionDeLaReunion",
+				"type": "UTF8"
+			},
+			{
+				"name": "CorreoElectronico",
+				"type": "UTF8"
+			},
+			{
+				"name": "IdParticipante",
+				"type": "UTF8"
+			},
+			{
+				"name": "Rol",
+				"type": "UTF8"
+			}
+		]
+	}
+}
