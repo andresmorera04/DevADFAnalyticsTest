@@ -34,7 +34,7 @@
 						},
 						"formatSettings": {
 							"type": "JsonWriteSettings",
-							"filePattern": "setOfObjects"
+							"filePattern": "arrayOfObjects"
 						}
 					},
 					"enableStaging": false,
@@ -137,14 +137,6 @@
 								},
 								"sink": {
 									"path": "nat"
-								}
-							},
-							{
-								"source": {
-									"path": "$['info']"
-								},
-								"sink": {
-									"path": "info"
 								}
 							}
 						],
