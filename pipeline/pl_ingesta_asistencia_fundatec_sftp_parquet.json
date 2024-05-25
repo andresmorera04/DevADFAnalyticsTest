@@ -146,7 +146,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_asistencia_fundatec_bronce_parquet",
+						"referenceName": "ds_asistencia_fundatec_datalake_archivo_parquet",
 						"type": "DatasetReference"
 					}
 				],
