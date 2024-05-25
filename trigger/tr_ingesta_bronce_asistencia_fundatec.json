@@ -22,10 +22,10 @@
 				"timeZone": "Central America Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						15
 					],
 					"hours": [
-						12
+						13
 					],
 					"weekDays": [
 						"Saturday"
