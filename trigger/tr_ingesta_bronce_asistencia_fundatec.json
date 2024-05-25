@@ -10,12 +10,6 @@
 					"referenceName": "pl_ingesta_asistencia_fundatec_csv",
 					"type": "PipelineReference"
 				}
-			},
-			{
-				"pipelineReference": {
-					"referenceName": "pl_ingesta_asistencia_fundatec_sftp_parquet",
-					"type": "PipelineReference"
-				}
 			}
 		],
 		"type": "ScheduleTrigger",
