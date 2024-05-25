@@ -1,0 +1,52 @@
+{
+	"name": "ds_asistencia_fundatec_sftp_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sftp_asistencia_sql2_2024_fundatec",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "fundatec"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"fileName": "asistencia.parquet",
+				"folderPath": "/uploads"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "Nombre",
+				"type": "UTF8"
+			},
+			{
+				"name": "PrimeraEntrada",
+				"type": "UTF8"
+			},
+			{
+				"name": "UltimaSalida",
+				"type": "UTF8"
+			},
+			{
+				"name": "DuracionDeLaReunion",
+				"type": "UTF8"
+			},
+			{
+				"name": "CorreoElectronico",
+				"type": "UTF8"
+			},
+			{
+				"name": "IdParticipante",
+				"type": "UTF8"
+			},
+			{
+				"name": "Rol",
+				"type": "UTF8"
+			}
+		]
+	}
+}
