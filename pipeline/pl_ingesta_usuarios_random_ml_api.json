@@ -1,0 +1,135 @@
+{
+	"name": "pl_ingesta_usuarios_random_ml_api",
+	"properties": {
+		"activities": [
+			{
+				"name": "Ingesta Datos",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "GET"
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"parallelCopies": 1,
+					"dataIntegrationUnits": 2,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['results'][0]['location']['street']['number']"
+								},
+								"sink": {
+									"name": "NumeroCalle",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['location']['postcode']"
+								},
+								"sink": {
+									"name": "CodigoPostal",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['location']['coordinates']['latitude']"
+								},
+								"sink": {
+									"name": "Latitud",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['location']['coordinates']['longitude']"
+								},
+								"sink": {
+									"name": "Longitud",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['dob']['date']"
+								},
+								"sink": {
+									"name": "FechaNacimiento"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['registered']['date']"
+								},
+								"sink": {
+									"name": "FechaRegistro"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['id']['value']"
+								},
+								"sink": {
+									"name": "NumeroIdentificacion",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['picture']['medium']"
+								},
+								"sink": {
+									"name": "UrlFoto"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_api_rest_usuarios_random_json",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_api_rest_usuarios_random_bronce_ml_parquet",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Datalake/Bronce"
+		},
+		"annotations": []
+	}
+}
