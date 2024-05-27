@@ -13,6 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "usuarios_random_ml.parquet",
 				"folderPath": "Bronce/Publico/APIs",
 				"fileSystem": "datalake"
 			},
