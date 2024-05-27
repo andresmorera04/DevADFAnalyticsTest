@@ -1,5 +1,5 @@
 {
-	"name": "da_api_rest_usuarios_random_bronce_ml_parquet",
+	"name": "ds_api_rest_usuarios_random_bronce_ml_parquet",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_datalake_test",
