@@ -668,6 +668,64 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_api_rest_usuarios_random_bronce_crm_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_datalake_test",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "APIs"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "usuarios_random_crm.parquet",
+						"folderPath": "Bronce/Publico/APIs",
+						"fileSystem": "datalake"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_test')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_api_rest_usuarios_random_bronce_ml_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_datalake_test",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "APIs"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "usuarios_random_ml.parquet",
+						"folderPath": "Bronce/Publico/APIs",
+						"fileSystem": "datalake"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_test')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_ingesta_asistencia_fundatec_csv')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1192,52 +1250,139 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_orquestador_pipelines_bronce_sftp')]",
+			"name": "[concat(parameters('factoryName'), '/pl_ingesta_usuarios_random_crm_api')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "Pipeline Orquestador de Bronce y de Sftp",
 				"activities": [
 					{
-						"name": "pl_ingesta_asistencia_fundatec_csv",
-						"type": "ExecutePipeline",
+						"name": "Ingesta Datos",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ingesta_asistencia_fundatec_csv",
-								"type": "PipelineReference"
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "pl_ingesta_asistencia_fundatec_sftp_parquet",
-						"type": "ExecutePipeline",
-						"dependsOn": [
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"parallelCopies": 1,
+							"dataIntegrationUnits": 2,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['results'][0]['gender']"
+										},
+										"sink": {
+											"name": "genero",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['location']['city']"
+										},
+										"sink": {
+											"name": "ciudad",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['location']['state']"
+										},
+										"sink": {
+											"name": "estado",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['location']['country']"
+										},
+										"sink": {
+											"name": "pais",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['email']"
+										},
+										"sink": {
+											"name": "correoelectronico",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['dob']['age']"
+										},
+										"sink": {
+											"name": "edad",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['cell']"
+										},
+										"sink": {
+											"name": "telefonocelular",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['id']['value']"
+										},
+										"sink": {
+											"name": "identificacion",
+											"type": "String"
+										}
+									}
+								],
+								"collectionReference": ""
+							}
+						},
+						"inputs": [
 							{
-								"activity": "pl_ingesta_asistencia_fundatec_csv",
-								"dependencyConditions": [
-									"Succeeded"
-								]
+								"referenceName": "ds_api_rest_usuarios_random_json",
+								"type": "DatasetReference",
+								"parameters": {}
 							}
 						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pl_ingesta_asistencia_fundatec_sftp_parquet",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
+						"outputs": [
+							{
+								"referenceName": "ds_api_rest_usuarios_random_bronce_crm_parquet",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"policy": {
@@ -1249,51 +1394,154 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_ingesta_asistencia_fundatec_csv')]",
-				"[concat(variables('factoryId'), '/pipelines/pl_ingesta_asistencia_fundatec_sftp_parquet')]"
+				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_json')]",
+				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_bronce_crm_parquet')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/tr_ingesta_bronce_asistencia_fundatec')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
+			"name": "[concat(parameters('factoryName'), '/pl_ingesta_usuarios_random_ml_api')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "Proceso automático de ejecución para ingestar los datos de la asistencia del CSV a la capa bronce del datalake",
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
+				"activities": [
 					{
-						"pipelineReference": {
-							"referenceName": "pl_orquestador_pipelines_bronce_sftp",
-							"type": "PipelineReference"
+						"name": "Ingesta Datos",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
 						},
-						"parameters": {}
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"parallelCopies": 1,
+							"dataIntegrationUnits": 2,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['results'][0]['location']['street']['number']"
+										},
+										"sink": {
+											"name": "NumeroCalle",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['location']['postcode']"
+										},
+										"sink": {
+											"name": "CodigoPostal",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['location']['coordinates']['latitude']"
+										},
+										"sink": {
+											"name": "Latitud",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['location']['coordinates']['longitude']"
+										},
+										"sink": {
+											"name": "Longitud",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['dob']['date']"
+										},
+										"sink": {
+											"name": "FechaNacimiento"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['registered']['date']"
+										},
+										"sink": {
+											"name": "FechaRegistro"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['id']['value']"
+										},
+										"sink": {
+											"name": "NumeroIdentificacion",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['picture']['medium']"
+										},
+										"sink": {
+											"name": "UrlFoto"
+										}
+									}
+								],
+								"collectionReference": ""
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_api_rest_usuarios_random_json",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_api_rest_usuarios_random_bronce_ml_parquet",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Week",
-						"interval": 1,
-						"startTime": "2024-05-25T00:05:00",
-						"endTime": "2024-06-14T01:00:00",
-						"timeZone": "Central America Standard Time",
-						"schedule": {
-							"minutes": [
-								15
-							],
-							"hours": [
-								13
-							],
-							"weekDays": [
-								"Saturday"
-							]
-						}
-					}
-				}
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Datalake/Bronce"
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_orquestador_pipelines_bronce_sftp')]"
+				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_json')]",
+				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_bronce_ml_parquet')]"
 			]
 		}
 	]
