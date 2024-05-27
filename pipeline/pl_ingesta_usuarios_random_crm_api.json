@@ -15,8 +15,119 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"enableStaging": false
-				}
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "GET"
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"parallelCopies": 1,
+					"dataIntegrationUnits": 2,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['results'][0]['gender']"
+								},
+								"sink": {
+									"name": "genero",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['location']['city']"
+								},
+								"sink": {
+									"name": "ciudad",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['location']['state']"
+								},
+								"sink": {
+									"name": "estado",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['location']['country']"
+								},
+								"sink": {
+									"name": "pais",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['email']"
+								},
+								"sink": {
+									"name": "correoelectronico",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['dob']['age']"
+								},
+								"sink": {
+									"name": "edad",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['cell']"
+								},
+								"sink": {
+									"name": "telefonocelular",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['results'][0]['id']['value']"
+								},
+								"sink": {
+									"name": "identificacion",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_api_rest_usuarios_random_json",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_api_rest_usuarios_random_bronce_crm_parquet",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"folder": {
