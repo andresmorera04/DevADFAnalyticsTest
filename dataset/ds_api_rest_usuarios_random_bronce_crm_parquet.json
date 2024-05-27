@@ -1,0 +1,23 @@
+{
+	"name": "ds_api_rest_usuarios_random_bronce_crm_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_datalake_test",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "APIs"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Bronce/Publico/APIs",
+				"fileSystem": "datalake"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
