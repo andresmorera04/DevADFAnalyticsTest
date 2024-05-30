@@ -1,0 +1,50 @@
+{
+	"name": "pl_Orquestador_Principal_Pipelines_Asistencia_Fundatec",
+	"properties": {
+		"activities": [
+			{
+				"name": "pl_orquestador_pipelines_bronce_sftp",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_orquestador_pipelines_bronce_sftp",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pl_transformacion_carga_asistencia_final_tbl",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pl_orquestador_pipelines_bronce_sftp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_transformacion_carga_asistencia_final_tbl",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Datalake/Orquestación"
+		},
+		"annotations": []
+	}
+}
