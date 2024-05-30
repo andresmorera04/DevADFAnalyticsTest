@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"connectionString\"de \"ls_sql_server_stage_devvertix\""
 		},
+		"ls_sql_server_testingdb_devvertix_connectionString": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"connectionString\"de \"ls_sql_server_testingdb_devvertix\""
+		},
 		"ls_api_rest_prueba_usuarios_random_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://randomuser.me/api/?results=2000"
@@ -77,6 +81,9 @@
 					},
 					"ls_sql_server_stage_devvertix_connectionString": {
 						"value": "[parameters('ls_sql_server_stage_devvertix_connectionString')]"
+					},
+					"ls_sql_server_testingdb_devvertix_connectionString": {
+						"value": "[parameters('ls_sql_server_testingdb_devvertix_connectionString')]"
 					},
 					"ls_api_rest_prueba_usuarios_random_properties_typeProperties_url": {
 						"value": "[parameters('ls_api_rest_prueba_usuarios_random_properties_typeProperties_url')]"

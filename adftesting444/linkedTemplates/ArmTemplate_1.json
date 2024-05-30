@@ -13,6 +13,385 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_ingesta_usuarios_random_ml_api')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Ingesta Datos",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"parallelCopies": 1,
+							"dataIntegrationUnits": 2,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['results'][0]['location']['street']['number']"
+										},
+										"sink": {
+											"name": "NumeroCalle",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['location']['postcode']"
+										},
+										"sink": {
+											"name": "CodigoPostal",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['location']['coordinates']['latitude']"
+										},
+										"sink": {
+											"name": "Latitud",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['location']['coordinates']['longitude']"
+										},
+										"sink": {
+											"name": "Longitud",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['dob']['date']"
+										},
+										"sink": {
+											"name": "FechaNacimiento"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['registered']['date']"
+										},
+										"sink": {
+											"name": "FechaRegistro"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['id']['value']"
+										},
+										"sink": {
+											"name": "NumeroIdentificacion",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['results'][0]['picture']['medium']"
+										},
+										"sink": {
+											"name": "UrlFoto"
+										}
+									}
+								],
+								"collectionReference": ""
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_api_rest_usuarios_random_json",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_api_rest_usuarios_random_bronce_ml_parquet",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Datalake/Bronce"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_transformacion_carga_asistencia_final_tbl')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Obtener Nombre Curso",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "SELECT \n\tValor\nFROM \n\t[dbo].[Parametros]\nWHERE \n\tCodigo = 1\n;",
+								"queryTimeout": "00:20:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_devvertix_configuracion_parametros_tb",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Cargar Stage",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Obtener Nombre Curso",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": false,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlServerSink",
+								"preCopyScript": "TRUNCATE TABLE stg.AsistenciaCsv",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"parallelCopies": 1,
+							"dataIntegrationUnits": 2,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CorreoElectronico",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Correo",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Nombre",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NombreEstudiante",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "PrimeraEntrada",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "FechaPrimeraEntrada",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "UltimaSalida",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "FechaUltimaSalida",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "DuracionDeLaReunion",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "DuracionEnLaLeccion",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "IdParticipante",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "IdParticipante",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Rol",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Rol",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_asistencia_fundatec_datalake_archivo_parquet",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_devvertix_stage_asistenciacsv_csv",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Carga Productiva",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Cargar Stage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "ls_sql_server_stage_devvertix",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"parameters": [
+										{
+											"name": "NombreCurso",
+											"type": "String",
+											"value": {
+												"value": "@activity('Obtener Nombre Curso').output.firstRow.Valor",
+												"type": "Expression"
+											},
+											"direction": "Input"
+										}
+									],
+									"type": "Query",
+									"text": "EXECUTE dbo.usp_TransformacionCargaAsistenciaTestingdb @NombreCurso"
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Datalake/Oro"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_orquestador_pipelines_bronce_sftp')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -72,6 +451,67 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_Orquestador_Principal_Pipelines_Asistencia_Fundatec')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "pl_orquestador_pipelines_bronce_sftp",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_orquestador_pipelines_bronce_sftp",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "pl_transformacion_carga_asistencia_final_tbl",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "pl_orquestador_pipelines_bronce_sftp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_transformacion_carga_asistencia_final_tbl",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Datalake/Orquestación"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_orquestador_pipelines_bronce_sftp')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_transformacion_carga_asistencia_final_tbl')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/tr_ingesta_bronce_asistencia_fundatec')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -82,7 +522,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "pl_orquestador_pipelines_bronce_sftp",
+							"referenceName": "pl_Orquestador_Principal_Pipelines_Asistencia_Fundatec",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -111,7 +551,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_orquestador_pipelines_bronce_sftp')]"
+				"[concat(variables('factoryId'), '/pipelines/pl_Orquestador_Principal_Pipelines_Asistencia_Fundatec')]"
 			]
 		}
 	]

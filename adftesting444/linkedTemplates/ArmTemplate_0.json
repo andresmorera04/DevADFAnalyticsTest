@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"connectionString\"de \"ls_sql_server_stage_devvertix\""
 		},
+		"ls_sql_server_testingdb_devvertix_connectionString": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"connectionString\"de \"ls_sql_server_testingdb_devvertix\""
+		},
 		"ls_api_rest_prueba_usuarios_random_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://randomuser.me/api/?results=2000"
@@ -129,6 +133,49 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_sql_server_testingdb_devvertix')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Conexión al servidor DevVertix sobre la base de datos testingdb",
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_sql_server_testingdb_devvertix_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_api_rest_usuarios_random_bronce_crm_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_datalake_test",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "APIs"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "usuarios_random_crm.parquet",
+						"folderPath": "Bronce/Publico/APIs",
+						"fileSystem": "datalake"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_test')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_api_rest_usuarios_random_bronce_json')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -151,6 +198,35 @@
 					}
 				},
 				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_test')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_api_rest_usuarios_random_bronce_ml_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_datalake_test",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "APIs"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "usuarios_random_ml.parquet",
+						"folderPath": "Bronce/Publico/APIs",
+						"fileSystem": "datalake"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_test')]"
@@ -665,64 +741,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_server_stage_devvertix')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_api_rest_usuarios_random_bronce_crm_parquet')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_datalake_test",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "APIs"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "usuarios_random_crm.parquet",
-						"folderPath": "Bronce/Publico/APIs",
-						"fileSystem": "datalake"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_test')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_api_rest_usuarios_random_bronce_ml_parquet')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_datalake_test",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "APIs"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "usuarios_random_ml.parquet",
-						"folderPath": "Bronce/Publico/APIs",
-						"fileSystem": "datalake"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_test')]"
 			]
 		},
 		{
@@ -1396,152 +1414,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_json')]",
 				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_bronce_crm_parquet')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ingesta_usuarios_random_ml_api')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Ingesta Datos",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.00:10:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"parallelCopies": 1,
-							"dataIntegrationUnits": 2,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"path": "$['results'][0]['location']['street']['number']"
-										},
-										"sink": {
-											"name": "NumeroCalle",
-											"type": "Int32"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['location']['postcode']"
-										},
-										"sink": {
-											"name": "CodigoPostal",
-											"type": "Int32"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['location']['coordinates']['latitude']"
-										},
-										"sink": {
-											"name": "Latitud",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['location']['coordinates']['longitude']"
-										},
-										"sink": {
-											"name": "Longitud",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['dob']['date']"
-										},
-										"sink": {
-											"name": "FechaNacimiento"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['registered']['date']"
-										},
-										"sink": {
-											"name": "FechaRegistro"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['id']['value']"
-										},
-										"sink": {
-											"name": "NumeroIdentificacion",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['picture']['medium']"
-										},
-										"sink": {
-											"name": "UrlFoto"
-										}
-									}
-								],
-								"collectionReference": ""
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_api_rest_usuarios_random_json",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_api_rest_usuarios_random_bronce_ml_parquet",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Datalake/Bronce"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_json')]",
-				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_bronce_ml_parquet')]"
 			]
 		}
 	]

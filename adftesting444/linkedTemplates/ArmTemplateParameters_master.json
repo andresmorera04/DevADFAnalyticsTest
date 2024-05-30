@@ -17,6 +17,9 @@
 		"ls_sql_server_stage_devvertix_connectionString": {
 			"value": ""
 		},
+		"ls_sql_server_testingdb_devvertix_connectionString": {
+			"value": ""
+		},
 		"ls_api_rest_prueba_usuarios_random_properties_typeProperties_url": {
 			"value": "https://randomuser.me/api/?results=2000"
 		},
