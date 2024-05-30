@@ -212,7 +212,7 @@
 								}
 							],
 							"type": "Query",
-							"text": "EXECUTE dbo.usp_TransformacionCargaAsistenciaTestingdb '?'"
+							"text": "EXECUTE dbo.usp_TransformacionCargaAsistenciaTestingdb @NombreCurso"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
