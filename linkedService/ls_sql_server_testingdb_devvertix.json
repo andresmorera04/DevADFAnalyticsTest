@@ -1,0 +1,13 @@
+{
+	"name": "ls_sql_server_testingdb_devvertix",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Conexión al servidor DevVertix sobre la base de datos testingdb",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=\"devvertix.ddns.net, 5722\";initial catalog=testingdb;user id=integrator",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDVFOUI1RTlELTEzOEUtNEUzMC1CNEVGLTk5NjlCOTcyMEUwNF9mZTdkYmRlMi1iNzYxLTRiYzMtOGUyYS05NGFhMmU0YTBiNDgiDQp9"
+		}
+	}
+}

@@ -7,7 +7,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "pl_orquestador_pipelines_bronce_sftp",
+					"referenceName": "pl_Orquestador_Principal_Pipelines_Asistencia_Fundatec",
 					"type": "PipelineReference"
 				}
 			}
