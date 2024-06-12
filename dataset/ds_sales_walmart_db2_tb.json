@@ -1,0 +1,19 @@
+{
+	"name": "ds_sales_walmart_db2_tb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_db2_testing",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DB2"
+		},
+		"annotations": [],
+		"type": "Db2Table",
+		"schema": [],
+		"typeProperties": {
+			"schema": "QS36FTEST",
+			"table": "WALMARTSALES"
+		}
+	}
+}
