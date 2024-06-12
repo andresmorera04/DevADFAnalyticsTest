@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"accountKey\"de \"ls_datalake_test\""
 		},
+		"ls_db2_testing_connectionString": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"connectionString\"de \"ls_db2_testing\""
+		},
 		"ls_sftp_asistencia_sql2_2024_fundatec_password": {
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"password\"de \"ls_sftp_asistencia_sql2_2024_fundatec\""
@@ -72,6 +76,9 @@
 					},
 					"ls_datalake_test_accountKey": {
 						"value": "[parameters('ls_datalake_test_accountKey')]"
+					},
+					"ls_db2_testing_connectionString": {
+						"value": "[parameters('ls_db2_testing_connectionString')]"
 					},
 					"ls_sftp_asistencia_sql2_2024_fundatec_password": {
 						"value": "[parameters('ls_sftp_asistencia_sql2_2024_fundatec_password')]"

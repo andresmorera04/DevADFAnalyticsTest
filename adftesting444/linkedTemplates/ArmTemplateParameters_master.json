@@ -8,6 +8,9 @@
 		"ls_datalake_test_accountKey": {
 			"value": ""
 		},
+		"ls_db2_testing_connectionString": {
+			"value": ""
+		},
 		"ls_sftp_asistencia_sql2_2024_fundatec_password": {
 			"value": ""
 		},

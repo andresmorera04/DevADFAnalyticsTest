@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"accountKey\"de \"ls_datalake_test\""
 		},
+		"ls_db2_testing_connectionString": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"connectionString\"de \"ls_db2_testing\""
+		},
 		"ls_sftp_asistencia_sql2_2024_fundatec_password": {
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"password\"de \"ls_sftp_asistencia_sql2_2024_fundatec\""
@@ -83,6 +87,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_db2_testing')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "Db2",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_db2_testing_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ls_sftp_asistencia_sql2_2024_fundatec')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -145,6 +162,35 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds__datalake_sales_walmart_db2_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_datalake_test",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DB2"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "saleswalmart.parquet",
+						"folderPath": "Bronce/Publico/DB2",
+						"fileSystem": "datalake"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_datalake_test')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ds_api_rest_usuarios_random_bronce_crm_parquet')]",
@@ -744,6 +790,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_sales_walmart_db2_tb')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_db2_testing",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DB2"
+				},
+				"annotations": [],
+				"type": "Db2Table",
+				"schema": [],
+				"typeProperties": {
+					"schema": "QS36FTEST",
+					"table": "WALMARTSALES"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_db2_testing')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_ingesta_asistencia_fundatec_csv')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -912,508 +982,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_asistencia_fundatec_csv')]",
 				"[concat(variables('factoryId'), '/datasets/ds_asistencia_fundatec_bronce_parquet')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ingesta_asistencia_fundatec_sftp_parquet')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Ingesta que carga sobre el mismo sftp un archivo parquet, necesario para pruebas con Databricks",
-				"activities": [
-					{
-						"name": "Ingesta Datos",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.00:10:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": false,
-									"modifiedDatetimeStart": {
-										"value": "@adddays(utcnow(), -4)",
-										"type": "Expression"
-									},
-									"modifiedDatetimeEnd": {
-										"value": "@utcnow()",
-										"type": "Expression"
-									},
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "ParquetReadSettings"
-								}
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "SftpWriteSettings",
-									"operationTimeout": "00:30:00",
-									"useTempFileRename": false
-								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"parallelCopies": 1,
-							"dataIntegrationUnits": 2,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "Nombre",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "Nombre",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "PrimeraEntrada",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "PrimeraEntrada",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "UltimaSalida",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "UltimaSalida",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "DuracionDeLaReunion",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "DuracionDeLaReunion",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "CorreoElectronico",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "CorreoElectronico",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "IdParticipante",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "IdParticipante",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "Rol",
-											"type": "String",
-											"physicalType": "UTF8"
-										},
-										"sink": {
-											"name": "Rol",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_asistencia_fundatec_datalake_archivo_parquet",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_asistencia_fundatec_sftp_parquet",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Sftp"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_asistencia_fundatec_datalake_archivo_parquet')]",
-				"[concat(variables('factoryId'), '/datasets/ds_asistencia_fundatec_sftp_parquet')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ingesta_usuarios_random_api')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Ingesta de datos de un ",
-				"activities": [
-					{
-						"name": "Obtener Datos de API",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.00:10:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET",
-									"requestTimeout": ""
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings",
-									"filePattern": "arrayOfObjects"
-								}
-							},
-							"enableStaging": false,
-							"parallelCopies": 1,
-							"dataIntegrationUnits": 2,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"path": "[['gender']"
-										},
-										"sink": {
-											"path": "gender"
-										}
-									},
-									{
-										"source": {
-											"path": "[['name']"
-										},
-										"sink": {
-											"path": "name"
-										}
-									},
-									{
-										"source": {
-											"path": "[['location']"
-										},
-										"sink": {
-											"path": "location"
-										}
-									},
-									{
-										"source": {
-											"path": "[['email']"
-										},
-										"sink": {
-											"path": "email"
-										}
-									},
-									{
-										"source": {
-											"path": "[['login']"
-										},
-										"sink": {
-											"path": "login"
-										}
-									},
-									{
-										"source": {
-											"path": "[['dob']"
-										},
-										"sink": {
-											"path": "dob"
-										}
-									},
-									{
-										"source": {
-											"path": "[['registered']"
-										},
-										"sink": {
-											"path": "registered"
-										}
-									},
-									{
-										"source": {
-											"path": "[['phone']"
-										},
-										"sink": {
-											"path": "phone"
-										}
-									},
-									{
-										"source": {
-											"path": "[['cell']"
-										},
-										"sink": {
-											"path": "cell"
-										}
-									},
-									{
-										"source": {
-											"path": "[['id']"
-										},
-										"sink": {
-											"path": "id"
-										}
-									},
-									{
-										"source": {
-											"path": "[['picture']"
-										},
-										"sink": {
-											"path": "picture"
-										}
-									},
-									{
-										"source": {
-											"path": "[['nat']"
-										},
-										"sink": {
-											"path": "nat"
-										}
-									}
-								],
-								"collectionReference": "$['results']"
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_api_rest_usuarios_random_json",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_api_rest_usuarios_random_bronce_json",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Datalake/Bronce"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_json')]",
-				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_bronce_json')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ingesta_usuarios_random_crm_api')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Ingesta Datos",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.00:10:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"parallelCopies": 1,
-							"dataIntegrationUnits": 2,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"path": "$['results'][0]['gender']"
-										},
-										"sink": {
-											"name": "genero",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['location']['city']"
-										},
-										"sink": {
-											"name": "ciudad",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['location']['state']"
-										},
-										"sink": {
-											"name": "estado",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['location']['country']"
-										},
-										"sink": {
-											"name": "pais",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['email']"
-										},
-										"sink": {
-											"name": "correoelectronico",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['dob']['age']"
-										},
-										"sink": {
-											"name": "edad",
-											"type": "Int32"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['cell']"
-										},
-										"sink": {
-											"name": "telefonocelular",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['results'][0]['id']['value']"
-										},
-										"sink": {
-											"name": "identificacion",
-											"type": "String"
-										}
-									}
-								],
-								"collectionReference": ""
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_api_rest_usuarios_random_json",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_api_rest_usuarios_random_bronce_crm_parquet",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Datalake/Bronce"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_json')]",
-				"[concat(variables('factoryId'), '/datasets/ds_api_rest_usuarios_random_bronce_crm_parquet')]"
 			]
 		}
 	]
