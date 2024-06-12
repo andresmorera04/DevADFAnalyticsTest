@@ -15,8 +15,17 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "Db2Source"
+					},
 					"enableStaging": false
-				}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_sales_walmart_db2_tb",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"folder": {
