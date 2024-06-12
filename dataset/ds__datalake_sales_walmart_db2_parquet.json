@@ -13,6 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "saleswalmart.parquet",
 				"folderPath": "Bronce/Publico/DB2",
 				"fileSystem": "datalake"
 			},
