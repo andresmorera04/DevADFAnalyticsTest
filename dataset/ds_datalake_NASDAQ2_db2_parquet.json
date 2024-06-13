@@ -1,0 +1,27 @@
+{
+	"name": "ds_datalake_NASDAQ2_db2_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_datalake_test",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DB2"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@\"NASDAQ2_\"+replace(substring(string(adddays(utcnow(), -1)), 1, 10), '-', '')+\".parquet\"",
+					"type": "Expression"
+				},
+				"folderPath": "Bronce/Privado/DB2",
+				"fileSystem": "datalake"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
