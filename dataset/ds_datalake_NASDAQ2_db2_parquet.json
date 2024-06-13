@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "\"NASDAQ2_\"+replace(substring(string(adddays(utcnow(), -1)), 1, 10), '-', '')+\".parquet\"",
+					"value": "@concat('NASDAQ2_', replace(substring(string(addDays(utcNow(), -1)) , 1, 10), '-', ''), '.parquet')",
 					"type": "Expression"
 				},
 				"folderPath": "Bronce/Privado/DB2",
