@@ -1,0 +1,162 @@
+{
+	"name": "pl_ingesta_datos_NASDAQ2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Ingesta",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "Db2Source"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"parallelCopies": 1,
+					"dataIntegrationUnits": 2,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Date",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "Date",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "Ticker",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Ticker",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Exchange",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Exchange",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Open",
+									"type": "Double"
+								},
+								"sink": {
+									"name": "Open",
+									"type": "Double",
+									"physicalType": "DOUBLE"
+								}
+							},
+							{
+								"source": {
+									"name": "High",
+									"type": "Double"
+								},
+								"sink": {
+									"name": "High",
+									"type": "Double",
+									"physicalType": "DOUBLE"
+								}
+							},
+							{
+								"source": {
+									"name": "Low",
+									"type": "Double"
+								},
+								"sink": {
+									"name": "Low",
+									"type": "Double",
+									"physicalType": "DOUBLE"
+								}
+							},
+							{
+								"source": {
+									"name": "Close",
+									"type": "Double"
+								},
+								"sink": {
+									"name": "Close",
+									"type": "Double",
+									"physicalType": "DOUBLE"
+								}
+							},
+							{
+								"source": {
+									"name": "ADJCLOSE",
+									"type": "Double"
+								},
+								"sink": {
+									"name": "ADJCLOSE",
+									"type": "Double",
+									"physicalType": "DOUBLE"
+								}
+							},
+							{
+								"source": {
+									"name": "Volume",
+									"type": "Double"
+								},
+								"sink": {
+									"name": "Volume",
+									"type": "Double",
+									"physicalType": "DOUBLE"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_db2_NASDAQ2_tb",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_datalake_NASDAQ2_db2_parquet",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Datalake/Bronce"
+		},
+		"annotations": []
+	}
+}
